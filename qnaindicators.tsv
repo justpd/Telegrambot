@@ -1,5 +1,5 @@
 Question	Answer
-ema20	ta.ema(Reliance["Close"], length=20)
-ema50	ta.ema(Reliance["Close"], length=50)
-ema100	ta.ema(Reliance["Close"], length=100)
-ema200	ta.ema(Reliance["Close"], length=200)
+ema20	(ta.ema(Reliance["Close"], length=20))[-1]
+ema50	(ta.ema(Reliance["Close"], length=50))[-1]
+ema100	(ta.ema(Reliance["Close"], length=100))[-1]
+ema200	(ta.ema(Reliance["Close"], length=200))[-1]
