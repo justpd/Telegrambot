@@ -1,7 +1,12 @@
 import requests
 import pandas as pd
+import pandas_ta as ta
+from datetime import date
+from nsepy import get_history
+from nsepy import get_rbi_ref_history
 
-url = 'https://raw.githubusercontent.com/vikasjha001/telegram/main/qna_chitchat_professional.tsv'
+
+url = 'https://raw.githubusercontent.com/justpd/Telegrambot/main/qnaindicators.tsv'
 
 df = pd.read_csv(url, sep="\t")
 
@@ -30,13 +35,91 @@ def read_msg(offset):
 
 
 def auto_answer(message):
-  answer = df.loc[df['Question'].str.lower() == message.lower()]  
+  t1=message.split()
+  today = date.today()
+  day,month, year = (today.day, today.month, today.year-1) if today.month != 1 else (12, abc.year-1)
+  pre = today.replace(day=day, month=month, year=year)
+  day1,month1,year1 = (today.day-1, today.month, today.year) if today.month != 1 else (12, abc.year-1)
+  yesterday = today.replace(day=day1, month=month1, year=year1)
+  df1 = get_history(symbol=t1[0],
+                  start=pre,
+                  end=today)
+    
+  if len(t1)>1:  
+    if t1[1]== "Ema20":
+      ans = ta.ema(df1["Close"], length=20)
+      return (ans[-1])
+    elif t1[1]== "Ema50":
+      ans = ta.ema(df1["Close"], length=50)
+      return (ans[-1])
+    elif t1[1]== "Ema100":
+      ans = ta.ema(df1["Close"], length=100)
+      return (ans[-1])
+    elif t1[1]== "Ema200":
+      ans = ta.ema(df1["Close"], length=200)
+      return (ans[-1])
+    elif t1[1]== "Open":
+      ans = df1["Open"]
+      return (ans[-1])
+    elif t1[1]== "Close":
+      ans = df1["Close"]
+      return (ans[-1])
+    elif t1[1]== "High":
+      ans = df1["High"]
+      return (ans[-1])
+    elif t1[1]== "Low":
+      ans = df1["Low"]
+      return (ans[-1])
+    elif t1[0]== "Rbi":
+      a = get_rbi_ref_history(yesterday, today)
+      if t1[1]=="Usd":
+        ans=a['1 USD'][-1]
+        return (ans)
+      elif t1[1]=="Euro":
+        ans=a['1 EURO'][-1]
+        return (ans)
+      elif t1[1]=="Gbp":
+        ans=a['1 GBP'][-1]
+        return (ans)
+      elif t1[1]=="Yen":
+        ans=a['100 YEN'][-1]
+        return (ans)
+      else: 
+        return "Please enter the functions as per the order "
+    else:
+      return """Sorry, I could not understand you !!!Please enter the function with 1st letter in caps which you would like to perform along with the name
+Functions List:
+{Open
+High
+Low
+Close
+Ema20
+Ema50
+Ema100
+Ema200}-> to be used along with Stock names
+eg. Reliance Ema50
+This will give you ema50 of Reliance
 
-  if not answer.empty:
-      answer = answer.iloc[0]['Answer']
-      return answer
+Rbi (Currency name)-> Rbi reference rates 
+eg.Rbi Usd
+This will give you Latest Rbi reference rate of USD
+
+eg. Reliance Ema50
+This will give you ema50 of Reliance"""
   else:
-      return "Sorry, I could not understand you !!! I am still learning and try to get better in answering."
+    return """Please enter the function with 1st letter in caps which you would like to perform along with the name
+Functions List:
+{Open
+High
+Low
+Close
+Ema20
+Ema50
+Ema100
+Ema200}-> to be used along with Stock names
+Rbi -> Rbi reference rates 
+eg. Reliance Ema50
+This will give you ema50 of Reliance"""
 
 
 
