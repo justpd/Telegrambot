@@ -1,0 +1,5 @@
+Question	Answer
+ema200	ta.ema(Reliance["Close"], length=20)
+ema50	ta.ema(Reliance["Close"], length=50)
+ema100	ta.ema(Reliance["Close"], length=100)
+ema200	ta.ema(Reliance["Close"], length=200)
